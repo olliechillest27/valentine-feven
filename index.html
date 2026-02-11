@@ -6,13 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
+html, body{
   width:100vw;
   height:100vh;
   font-family:-apple-system,BlinkMacSystemFont,"San Francisco",Arial;
   background:#fff;
   overflow:hidden;
   position:relative;
+  transition: background-color 0.3s ease;
 }
 
 /* Border flashing lights */
@@ -41,7 +42,6 @@ body{
   align-items:center;
   text-align:center;
   padding:20px;
-  transition: all 0.5s ease;
 }
 
 h1{
@@ -62,9 +62,10 @@ button{
   padding:16px 30px;
   font-size:1.3rem;
   cursor:pointer;
-  transition:0.4s ease;
+  transition:0.3s ease;
   box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
+
 button:hover{
   transform:scale(1.1) rotate(-2deg);
 }
@@ -72,12 +73,10 @@ button:hover{
 #yes{
   background:#e60026;
   color:white;
-  z-index:2;
 }
 
 #no{
   background:#ddd;
-  z-index:1;
 }
 
 /* Heartbeat animation */
@@ -99,11 +98,10 @@ button:hover{
   flex-direction:column;
   z-index:99999;
   opacity:0;
-  transition:1s ease;
+  transition: opacity 0.5s ease;
 }
 </style>
 </head>
-
 <body>
 
 <div class="border"></div>
@@ -122,39 +120,40 @@ const no = document.getElementById("no");
 const container = document.querySelector(".container");
 let noCount = 0;
 
-/* No button clicks */
+/* No button click logic */
 no.onclick = () => {
   noCount++;
-  no.style.transform = `scale(${1 - noCount*0.12}) rotate(${noCount*15}deg)`;
+  no.style.transform = `scale(${Math.max(0, 1 - noCount*0.12)}) rotate(${noCount*15}deg)`;
   yes.style.transform = `scale(${1 + noCount*0.1})`; // small growth
 
   if(noCount >=5){
     no.style.display="none";
-    // Heartbeat effect
     yes.style.animation="heartbeat 1s infinite";
   }
 };
 
 /* Yes button click */
 yes.onclick = () => {
+  // Hide the container
   container.style.display="none";
 
   // Show final text
   const finalText = document.createElement("div");
   finalText.className="finalText";
-  finalText.style.opacity=1;
   finalText.innerHTML="You are now my Valentine ❤️";
   document.body.appendChild(finalText);
+  // Make text visible
+  setTimeout(()=>{ finalText.style.opacity=1; }, 50);
 
-  // Start party lights (red & pink)
+  // Party lights: alternate red and pink rapidly
   let colors=["#ff0000","#ff99cc"];
   let i=0;
   const party = setInterval(()=>{
-    document.body.style.backgroundColor=colors[i%colors.length];
+    document.body.style.backgroundColor = colors[i%colors.length];
     i++;
-  },300);
+  }, 300);
 
-  // Optional: stop party after 15 seconds
+  // Stop party after 15 seconds
   setTimeout(()=>clearInterval(party),15000);
 };
 </script>
