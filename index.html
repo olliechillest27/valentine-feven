@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <title>For Fevi ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 body{
   width:100vw;
   height:100vh;
@@ -16,18 +14,12 @@ body{
   overflow:hidden;
 }
 
-/* Flashing bulb border */
-.border{
+/* Glowing flower border animation */
+.border-flower{
   position:fixed;
   inset:0;
-  border:10px solid red;
-  animation:flash 1s infinite alternate;
   pointer-events:none;
-}
-
-@keyframes flash{
-  0%{border-color:red;}
-  100%{border-color:green;}
+  z-index:9997;
 }
 
 .container{
@@ -39,12 +31,19 @@ body{
   align-items:center;
   text-align:center;
   padding:20px;
+  transition: all 0.5s ease;
 }
 
 h1{
   color:#e60026;
   font-size:2rem;
   margin-bottom:40px;
+  animation:fadeSlide 1s ease forwards;
+}
+
+@keyframes fadeSlide{
+  0%{opacity:0; transform:translateY(-50px);}
+  100%{opacity:1; transform:translateY(0);}
 }
 
 .buttons{
@@ -57,7 +56,12 @@ button{
   border-radius:50px;
   padding:16px 30px;
   font-size:1.3rem;
+  cursor:pointer;
   transition:0.4s ease;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+button:hover{
+  transform:scale(1.1) rotate(-2deg);
 }
 
 #yes{
@@ -84,6 +88,12 @@ button{
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
   z-index:9999;
   text-align:left;
+  animation:popupFade 0.5s ease;
+}
+
+@keyframes popupFade{
+  0%{opacity:0; transform:translateY(-20px);}
+  100%{opacity:1; transform:translateY(0);}
 }
 
 /* Final screen */
@@ -98,7 +108,7 @@ button{
   text-align:center;
   font-size:2.5rem;
   z-index:99999;
-  animation:fadeIn 0.6s ease;
+  animation:fadeIn 0.8s ease;
 }
 
 @keyframes fadeIn{
@@ -110,7 +120,7 @@ button{
 
 <body>
 
-<div class="border"></div>
+<canvas class="border-flower"></canvas>
 
 <div class="container">
   <h1>Would you be my Valentine, Fevi? ❤️</h1>
@@ -125,11 +135,11 @@ let noCount = 0;
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
 
+/* Button interactions */
 no.onclick = () => {
   noCount++;
-
-  no.style.transform = `scale(${1 - noCount*0.12})`;
-  yes.style.transform = `scale(${1 + noCount*0.35})`;
+  no.style.transform = `scale(${1 - noCount*0.12}) rotate(${noCount*10}deg)`;
+  yes.style.transform = `scale(${1 + noCount*0.25})`;
 
   if(noCount >= 5){
     no.style.display="none";
@@ -141,6 +151,7 @@ no.onclick = () => {
 
 yes.onclick = () => {
   flowerBomb();
+  glowingFlowers();
   iphonePopup();
 
   setTimeout(()=>{
@@ -151,6 +162,7 @@ yes.onclick = () => {
   },4000);
 };
 
+/* iPhone popup */
 function iphonePopup(){
   const pop=document.createElement("div");
   pop.className="ios";
@@ -159,40 +171,6 @@ function iphonePopup(){
   setTimeout(()=>pop.remove(),10000);
 }
 
+/* Flower confetti effect */
 function flowerBomb(){
-  const c=document.createElement("canvas");
-  document.body.appendChild(c);
-  c.style.position="fixed";
-  c.style.inset=0;
-  c.style.zIndex=9998;
-  const ctx=c.getContext("2d");
-  c.width=innerWidth;
-  c.height=innerHeight;
-
-  let f=[...Array(200)].map(()=>({
-    x:Math.random()*c.width,
-    y:Math.random()*c.height,
-    r:Math.random()*8+4,
-    color:["#ff4d6d","#ff99aa","#ffffff"]
-      [Math.floor(Math.random()*3)]
-  }));
-
-  function draw(){
-    ctx.clearRect(0,0,c.width,c.height);
-    f.forEach(p=>{
-      ctx.fillStyle=p.color;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fill();
-      p.y+=4;
-      if(p.y>c.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-</script>
-
-</body>
-</html>
 
