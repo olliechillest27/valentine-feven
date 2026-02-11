@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For Feven ❤️</title>
+<title>For Fevi ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -23,32 +23,29 @@ body{
   max-width:380px;
   background:white;
   border-radius:25px;
-  padding:20px;
+  padding:22px;
   text-align:center;
   position:relative;
   overflow:hidden;
 }
 
 .card::before{
-  content:"🌸 🌹 🌸 🌹 🌸 🌹";
+  content:"🌸 🌹 🌸 🌹 🌸 🌹 🌸";
   position:absolute;
-  top:5px;
+  top:6px;
   width:100%;
   text-align:center;
+  font-size:22px;
 }
 
 h1{
   color:#e60026;
-  font-size:1.7rem;
-}
-
-p{
-  color:#555;
+  font-size:1.6rem;
 }
 
 img{
   width:75%;
-  max-width:240px;
+  max-width:230px;
   border-radius:20px;
   margin:15px 0;
   transition:0.5s ease;
@@ -83,17 +80,53 @@ button{
   font-size:1.1rem;
   color:#e60026;
 }
+
+/* Fullscreen YES */
+.fullscreen-yes{
+  position:fixed;
+  inset:0;
+  background:#e60026;
+  color:white;
+  z-index:99999;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:2rem;
+  padding:20px;
+  animation:fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* iPhone popup */
+.ios-popup{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:360px;
+  background:rgba(245,245,247,0.95);
+  backdrop-filter:blur(20px);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  font-family:-apple-system,BlinkMacSystemFont;
+  z-index:100000;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <h1>Will you be my Valentine? ❤️</h1>
-  <p>Fevi 🌹</p>
+  <h1>Would you be my Valentine, Fevi? 💐❤️</h1>
 
-  <!-- YOUR PIC FIRST -->
-  <img id="mainImg" src="me.jpg">
+  <img id="mainImg" src="https://i.imgur.com/6XK6fFQ.png">
 
   <div class="buttons">
     <button id="yes">Yes 💖</button>
@@ -103,69 +136,91 @@ button{
   <div id="msg"></div>
 </div>
 
-<!-- MUSIC -->
-<audio id="music">
-  <source src="perfect.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 let noCount = 0;
+
 const sadCats = [
   "https://i.imgur.com/1X5qX8y.png",
   "https://i.imgur.com/Uw1ZKZP.png",
-  "https://i.imgur.com/rZpG4Hk.png"
+  "https://i.imgur.com/rZpG4Hk.png",
+  "https://i.imgur.com/VQbZK6y.png",
+  "https://i.imgur.com/4M7IWwP.png"
 ];
 
-document.getElementById("no").onclick = () => {
+const jokes = [
+  "Fevi don’t break my heart 💔",
+  "That hurt… try again 😿",
+  "My heart is shaking 🥺",
+  "You’re teasing me now 😭",
+  "Okay okay… this is serious 💓"
+];
+
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const img = document.getElementById("mainImg");
+const msg = document.getElementById("msg");
+
+noBtn.onclick = () => {
   noCount++;
-  document.getElementById("msg").innerText = "Fevi don’t break my heart 💔";
-  document.getElementById("mainImg").src =
-    sadCats[noCount % sadCats.length];
+  img.src = sadCats[noCount % sadCats.length];
+  msg.innerText = jokes[noCount % jokes.length];
 
-  document.getElementById("no").style.transform="scale(0.75)";
-  document.getElementById("yes").style.transform=`scale(${1+noCount*0.25})`;
+  noBtn.style.transform = `scale(${1 - noCount*0.08})`;
+  yesBtn.style.transform = `scale(${1 + noCount*0.15})`;
 
-  if(noCount>=2){
-    document.getElementById("no").style.display="none";
-    document.getElementById("yes").style.width="100%";
+  if(noCount >= 5){
+    noBtn.style.display="none";
+    yesBtn.style.width="100%";
   }
 };
 
-document.getElementById("yes").onclick = () => {
-  document.getElementById("msg").innerText =
-    "Thanks for being my Valentine ❤️ I love you";
+yesBtn.onclick = () => {
+  const screen = document.createElement("div");
+  screen.className = "fullscreen-yes";
+  screen.innerHTML = "Now you are my Valentine ❤️<br>I love you baby 💕";
+  document.body.appendChild(screen);
 
-  document.getElementById("mainImg").src="her.jpg";
-  document.getElementById("music").play();
-  confetti();
+  fireworks();
+  iosPopup();
+
+  setTimeout(()=>screen.remove(),5000);
 };
 
-function confetti(){
+function iosPopup(){
+  const pop=document.createElement("div");
+  pop.className="ios-popup";
+  pop.innerHTML="<strong>Messages</strong><br><b>Ollie ❤️</b><br>I love you ❤️<br>Your soulmate, Ollie";
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),10000);
+}
+
+function fireworks(){
   const c=document.createElement("canvas");
   document.body.appendChild(c);
   c.style.position="fixed";
-  c.style.top=0;c.style.left=0;
-  c.width=innerWidth;c.height=innerHeight;
+  c.style.inset=0;
+  c.style.zIndex=99998;
   const ctx=c.getContext("2d");
+  c.width=innerWidth;
+  c.height=innerHeight;
 
-  let pieces=[...Array(120)].map(()=>({
+  let p=[...Array(160)].map(()=>({
     x:Math.random()*c.width,
     y:Math.random()*c.height,
     r:Math.random()*6+4,
-    d:Math.random()*c.height,
-    color:["#e60026","#ff4d6d","#ff99aa"]
+    color:["#ff4d6d","#fff","#ff99aa"]
       [Math.floor(Math.random()*3)]
   }));
 
   function draw(){
     ctx.clearRect(0,0,c.width,c.height);
-    pieces.forEach(p=>{
-      ctx.fillStyle=p.color;
+    p.forEach(e=>{
+      ctx.fillStyle=e.color;
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
       ctx.fill();
-      p.y+=3;
-      if(p.y>c.height)p.y=0;
+      e.y+=3;
+      if(e.y>c.height)e.y=0;
     });
     requestAnimationFrame(draw);
   }
