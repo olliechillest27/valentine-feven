@@ -12,16 +12,26 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"San Francisco",Arial;
   background:#fff;
   overflow:hidden;
+  position:relative;
 }
 
-/* Glowing flower border animation */
-.border-flower{
+/* Border flashing lights */
+.border{
   position:fixed;
   inset:0;
+  border:10px solid red;
+  animation:flash 1s infinite alternate;
   pointer-events:none;
-  z-index:9997;
+  z-index:9999;
 }
 
+@keyframes flash{
+  0%{border-color:red;}
+  50%{border-color:green;}
+  100%{border-color:red;}
+}
+
+/* Container */
 .container{
   width:100%;
   height:100%;
@@ -38,12 +48,7 @@ h1{
   color:#e60026;
   font-size:2rem;
   margin-bottom:40px;
-  animation:fadeSlide 1s ease forwards;
-}
-
-@keyframes fadeSlide{
-  0%{opacity:0; transform:translateY(-50px);}
-  100%{opacity:1; transform:translateY(0);}
+  transition: 0.5s ease;
 }
 
 .buttons{
@@ -67,10 +72,29 @@ button:hover{
 #yes{
   background:#e60026;
   color:white;
+  z-index:2;
 }
 
 #no{
   background:#ddd;
+  z-index:1;
+}
+
+/* Final screen */
+.final{
+  position:fixed;
+  inset:0;
+  background:#e60026;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:2rem;
+  flex-direction:column;
+  z-index:99999;
+  opacity:0;
+  transition:1s ease;
 }
 
 /* iPhone popup */
@@ -86,41 +110,27 @@ button:hover{
   border-radius:22px;
   padding:16px;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  z-index:9999;
+  z-index:100000;
   text-align:left;
-  animation:popupFade 0.5s ease;
+  opacity:0;
+  transition:0.5s ease;
 }
 
-@keyframes popupFade{
-  0%{opacity:0; transform:translateY(-20px);}
-  100%{opacity:1; transform:translateY(0);}
-}
-
-/* Final screen */
-.final{
-  position:fixed;
-  inset:0;
-  background:#e60026;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  font-size:2.5rem;
-  z-index:99999;
-  animation:fadeIn 0.8s ease;
-}
-
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
+/* Stickers */
+.sticker{
+  position:absolute;
+  width:20px;
+  height:20px;
+  pointer-events:none;
+  background-size:cover;
+  z-index:99998;
 }
 </style>
 </head>
 
 <body>
 
-<canvas class="border-flower"></canvas>
+<div class="border"></div>
 
 <div class="container">
   <h1>Would you be my Valentine, Fevi? ❤️</h1>
@@ -134,115 +144,58 @@ button:hover{
 let noCount = 0;
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
+const container = document.querySelector(".container");
 
-/* Button interactions */
+/* No button logic */
 no.onclick = () => {
   noCount++;
-  no.style.transform = `scale(${1 - noCount*0.12}) rotate(${noCount*10}deg)`;
-  yes.style.transform = `scale(${1 + noCount*0.25})`;
+  no.style.transform = `scale(${1 - noCount*0.12}) rotate(${noCount*15}deg)`;
+  yes.style.transform = `scale(${1 + noCount*0.35})`;
 
   if(noCount >= 5){
     no.style.display="none";
-    yes.style.width="90vw";
-    yes.style.height="120px";
-    yes.style.fontSize="1.6rem";
+    yes.style.width="100vw";
+    yes.style.height="100vh";
+    yes.style.fontSize="2.5rem";
+    yes.style.borderRadius="0";
   }
 };
 
+/* Yes button logic */
 yes.onclick = () => {
-  flowerBomb();
-  glowingFlowers();
-  iphonePopup();
+  // Hide original container
+  container.style.display="none";
 
+  // Show final red screen
+  const final = document.createElement("div");
+  final.className="final";
+  final.style.opacity=1;
+  final.innerHTML="Now you are my Valentine ❤️<br>I love you baby 💕";
+  document.body.appendChild(final);
+
+  // Add love stickers
+  for(let i=0;i<100;i++){
+    const s = document.createElement("div");
+    s.className="sticker";
+    s.style.left=Math.random()*window.innerWidth+"px";
+    s.style.top=Math.random()*window.innerHeight+"px";
+    s.style.backgroundImage = Math.random()>0.5 ?
+      "url('https://i.imgur.com/1pF6J9s.png')" : // pink heart
+      "url('https://i.imgur.com/klT49nG.png')"; // red heart
+    document.body.appendChild(s);
+  }
+
+  // Show iPhone popup after 5 seconds
   setTimeout(()=>{
-    const end=document.createElement("div");
-    end.className="final";
-    end.innerHTML="You are my Valentine ❤️<br>I love you baby 💕";
-    document.body.appendChild(end);
-  },4000);
+    const pop = document.createElement("div");
+    pop.className="ios";
+    pop.style.opacity=1;
+    pop.innerHTML="<strong>Messages</strong><br><b>Ollie ❤️</b><br>I love you shawty ❤️";
+    document.body.appendChild(pop);
+    setTimeout(()=>pop.remove(),8000);
+  },5000);
 };
-
-/* iPhone popup */
-function iphonePopup(){
-  const pop=document.createElement("div");
-  pop.className="ios";
-  pop.innerHTML="<strong>Messages</strong><br><b>Ollie ❤️</b><br>I love you shawty ❤️";
-  document.body.appendChild(pop);
-  setTimeout(()=>pop.remove(),10000);
-}
-
-/* Flower confetti effect */
-function flowerBomb(){
-  const c=document.createElement("canvas");
-  document.body.appendChild(c);
-  c.style.position="fixed";
-  c.style.inset=0;
-  c.style.zIndex=9998;
-  const ctx=c.getContext("2d");
-  c.width=innerWidth;
-  c.height=innerHeight;
-
-  let f=[...Array(300)].map(()=>({
-    x:Math.random()*c.width,
-    y:Math.random()*c.height,
-    r:Math.random()*6+3,
-    color:["#ff4d6d","#ff99aa","#ffffff","#ffccf2","#ff66b2"][Math.floor(Math.random()*5)]
-  }));
-
-  function draw(){
-    ctx.clearRect(0,0,c.width,c.height);
-    f.forEach(p=>{
-      ctx.fillStyle=p.color;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fill();
-      p.y+=Math.random()*3+2;
-      if(p.y>c.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-/* Glowing flower border animation */
-function glowingFlowers(){
-  const canvas=document.querySelector(".border-flower");
-  const ctx=canvas.getContext("2d");
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
-
-  let flowers=[...Array(80)].map(() => ({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    size: Math.random()*8+4,
-    glow: Math.random()*0.6+0.3,
-    color: ["#ff4d6d","#ff99aa","#ffffff","#ffccf2","#ff66b2"][Math.floor(Math.random()*5)]
-  }));
-
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    flowers.forEach(f=>{
-      ctx.beginPath();
-      ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
-      ctx.fillStyle=f.color;
-      ctx.shadowColor=f.color;
-      ctx.shadowBlur=f.glow*20;
-      ctx.fill();
-
-      // subtle movement along border
-      f.x += Math.random()*2-1;
-      f.y += Math.random()*2-1;
-      if(f.x<0) f.x=canvas.width;
-      if(f.x>canvas.width) f.x=0;
-      if(f.y<0) f.y=canvas.height;
-      if(f.y>canvas.height) f.y=0;
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
-}
 </script>
 
 </body>
 </html>
-
