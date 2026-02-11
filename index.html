@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>For Fevi ❤️</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -27,7 +27,7 @@ body{
 
 @keyframes flash{
   0%{border-color:red;}
-  50%{border-color:green;}
+  50%{border-color:pink;}
   100%{border-color:red;}
 }
 
@@ -101,16 +101,6 @@ button:hover{
   opacity:0;
   transition:1s ease;
 }
-
-/* Stickers */
-.sticker{
-  position:absolute;
-  width:15px;
-  height:15px;
-  pointer-events:none;
-  background-size:cover;
-  z-index:9998;
-}
 </style>
 </head>
 
@@ -131,18 +121,6 @@ const yes = document.getElementById("yes");
 const no = document.getElementById("no");
 const container = document.querySelector(".container");
 let noCount = 0;
-
-/* Add 500 love stickers at start */
-for(let i=0;i<500;i++){
-  const s = document.createElement("div");
-  s.className="sticker";
-  s.style.left=Math.random()*window.innerWidth+"px";
-  s.style.top=Math.random()*window.innerHeight+"px";
-  s.style.backgroundImage = Math.random()>0.5 ?
-      "url('https://i.imgur.com/1pF6J9s.png')" : // pink heart
-      "url('https://i.imgur.com/klT49nG.png')"; // red heart
-  document.body.appendChild(s);
-}
 
 /* No button clicks */
 no.onclick = () => {
@@ -168,8 +146,8 @@ yes.onclick = () => {
   finalText.innerHTML="You are now my Valentine ❤️";
   document.body.appendChild(finalText);
 
-  // Start party lights
-  let colors=["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff"];
+  // Start party lights (red & pink)
+  let colors=["#ff0000","#ff99cc"];
   let i=0;
   const party = setInterval(()=>{
     document.body.style.backgroundColor=colors[i%colors.length];
@@ -183,4 +161,3 @@ yes.onclick = () => {
 
 </body>
 </html>
-
