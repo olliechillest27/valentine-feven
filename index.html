@@ -80,50 +80,36 @@ button:hover{
   z-index:1;
 }
 
-/* Final screen */
-.final{
+/* Heartbeat animation */
+@keyframes heartbeat{
+  0%,100%{transform: scale(1);}
+  50%{transform: scale(1.2);}
+}
+
+/* Final text */
+.finalText{
   position:fixed;
   inset:0;
-  background:#e60026;
-  color:white;
   display:flex;
   justify-content:center;
   align-items:center;
   text-align:center;
-  font-size:2rem;
+  font-size:2.5rem;
+  color:white;
   flex-direction:column;
   z-index:99999;
   opacity:0;
   transition:1s ease;
 }
 
-/* iPhone popup */
-.ios{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:360px;
-  background:rgba(245,245,247,0.95);
-  backdrop-filter:blur(20px);
-  border-radius:22px;
-  padding:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  z-index:100000;
-  text-align:left;
-  opacity:0;
-  transition:0.5s ease;
-}
-
 /* Stickers */
 .sticker{
   position:absolute;
-  width:20px;
-  height:20px;
+  width:15px;
+  height:15px;
   pointer-events:none;
   background-size:cover;
-  z-index:99998;
+  z-index:9998;
 }
 </style>
 </head>
@@ -141,61 +127,60 @@ button:hover{
 </div>
 
 <script>
-let noCount = 0;
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
 const container = document.querySelector(".container");
+let noCount = 0;
 
-/* No button logic */
+/* Add 500 love stickers at start */
+for(let i=0;i<500;i++){
+  const s = document.createElement("div");
+  s.className="sticker";
+  s.style.left=Math.random()*window.innerWidth+"px";
+  s.style.top=Math.random()*window.innerHeight+"px";
+  s.style.backgroundImage = Math.random()>0.5 ?
+      "url('https://i.imgur.com/1pF6J9s.png')" : // pink heart
+      "url('https://i.imgur.com/klT49nG.png')"; // red heart
+  document.body.appendChild(s);
+}
+
+/* No button clicks */
 no.onclick = () => {
   noCount++;
   no.style.transform = `scale(${1 - noCount*0.12}) rotate(${noCount*15}deg)`;
-  yes.style.transform = `scale(${1 + noCount*0.35})`;
+  yes.style.transform = `scale(${1 + noCount*0.1})`; // small growth
 
-  if(noCount >= 5){
+  if(noCount >=5){
     no.style.display="none";
-    yes?.style.width="100vw";
-    yes?.style.height="100vh";
-    yes?.style.fontSize="2.5rem";
-    yes?.style.borderRadius="0";
+    // Heartbeat effect
+    yes.style.animation="heartbeat 1s infinite";
   }
 };
 
-/* Yes button logic */
-yes?.onclick = () => {
-  // Hide original container
+/* Yes button click */
+yes.onclick = () => {
   container.style.display="none";
 
-  // Show final red screen
-  const final = document.createElement("div");
-  final.className="final";
-  final.style.opacity=1;
-  final.innerHTML="Now you are my Valentine ❤️<br>I love you baby 💕";
-  document.body.appendChild(final);
+  // Show final text
+  const finalText = document.createElement("div");
+  finalText.className="finalText";
+  finalText.style.opacity=1;
+  finalText.innerHTML="You are now my Valentine ❤️";
+  document.body.appendChild(finalText);
 
-  // Add love stickers
-  for(let i=0;i<100;i++){
-    const s = document.createElement("div");
-    s.className="sticker";
-    s.style.left=Math.random()*window.innerWidth+"px";
-    s.style.top=Math.random()*window.innerHeight+"px";
-    s.style.backgroundImage = Math.random()>0.5 ?
-      "url('https://i.imgur.com/1pF6J9s.png')" : // pink heart
-      "url('https://i.imgur.com/klT49nG.png')"; // red heart
-    document.body.appendChild(s);
-  }
+  // Start party lights
+  let colors=["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff"];
+  let i=0;
+  const party = setInterval(()=>{
+    document.body.style.backgroundColor=colors[i%colors.length];
+    i++;
+  },300);
 
-  // Show iPhone popup after 5 seconds
-  setTimeout(()=>{
-    const pop = document.createElement("div");
-    pop.className="ios";
-    pop.style.opacity=1;
-    pop.innerHTML="<strong>Messages</strong><br><b>Ollie ❤️</b><br>I love you shawty ❤️";
-    document.body.appendChild(pop);
-    setTimeout(()=>pop.remove(),8000);
-  },5000);
+  // Optional: stop party after 15 seconds
+  setTimeout(()=>clearInterval(party),15000);
 };
 </script>
 
 </body>
 </html>
+
