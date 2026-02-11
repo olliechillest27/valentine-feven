@@ -100,6 +100,25 @@ button:hover{
   opacity:0;
   transition: opacity 0.5s ease;
 }
+
+/* iPhone popup */
+.ios{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:360px;
+  background:rgba(245,245,247,0.95);
+  backdrop-filter:blur(20px);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  z-index:100000;
+  text-align:left;
+  opacity:0;
+  transition:0.5s ease;
+}
 </style>
 </head>
 <body>
@@ -128,6 +147,7 @@ no.onclick = () => {
 
   if(noCount >=5){
     no.style.display="none";
+    // Heartbeat effect
     yes.style.animation="heartbeat 1s infinite";
   }
 };
@@ -142,7 +162,6 @@ yes.onclick = () => {
   finalText.className="finalText";
   finalText.innerHTML="You are now my Valentine ❤️";
   document.body.appendChild(finalText);
-  // Make text visible
   setTimeout(()=>{ finalText.style.opacity=1; }, 50);
 
   // Party lights: alternate red and pink rapidly
@@ -155,6 +174,17 @@ yes.onclick = () => {
 
   // Stop party after 15 seconds
   setTimeout(()=>clearInterval(party),15000);
+
+  // iPhone-style popup after 5 seconds
+  setTimeout(()=>{
+    const pop = document.createElement("div");
+    pop.className="ios";
+    pop.style.opacity=1;
+    pop.innerHTML="<strong>Messages</strong><br><b>Ollie ❤️</b><br>I love you baby ❤️";
+    document.body.appendChild(pop);
+    // Remove popup after 8 seconds
+    setTimeout(()=>pop.remove(),8000);
+  },5000);
 };
 </script>
 
